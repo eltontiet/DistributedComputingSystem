@@ -10,7 +10,12 @@ import java.util.Map;
 /**
  * This thread will decide if its children should be sent to a new server, or should just be run in this server.
  */
-public abstract class DistributedThread<Input, Output> extends Thread {
+public abstract class DistributedThread<Input, Output> {
+
+    protected DistributedThread<Input, Output> parent;
+    protected Thread thisThread;
+    protected Output data;
+    protected List<DistributedThreadBenchmark<Input, Output>> children;
 
     // Server address + capacity
     private Map<Address, Integer> otherServers;
@@ -18,10 +23,15 @@ public abstract class DistributedThread<Input, Output> extends Thread {
     protected DistributedRunnable<Input, Output> function;
 
     public DistributedThread(DistributedRunnable<Input, Output> func, List<Input> data) {
-        this(new HashMap<>(), func);
+        this(null, new HashMap<>(), func, data);
     }
 
-    public DistributedThread(Map<Address, Integer> servers, DistributedRunnable<Input, Output> func) {
+    public DistributedThread(DistributedThread<Input, Output> parent, DistributedRunnable<Input, Output> func, List<Input> data) {
+        this(parent, new HashMap<>(), func, data);
+    }
+
+    public DistributedThread(DistributedThread<Input, Output> parent, Map<Address, Integer> servers, DistributedRunnable<Input, Output> func, List<Input> data) {
+        this.parent = parent;
         otherServers = new HashMap<>();
         otherServers.putAll(servers);
         totalCapacity = calculateCapacity();
@@ -36,5 +46,7 @@ public abstract class DistributedThread<Input, Output> extends Thread {
 
         return totalCapacity;
     }
+
+    public abstract void runThread();
 
 }

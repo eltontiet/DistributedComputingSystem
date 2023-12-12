@@ -7,23 +7,50 @@ import java.util.List;
  */
 public class DistributedThreadBenchmark<Input, Output> extends DistributedThread<Input, Output> {
 
-    List<DistributedThreadBenchmark<Input, Output>> children;
+    protected int numSplits;
 
     public DistributedThreadBenchmark(DistributedRunnable<Input, Output> func, List<Input> data) {
         super(func, data);
+        func.setThreadFactory(new ThreadFactory<Input, Output>(Mode.Benchmark));
     }
 
+    public DistributedThreadBenchmark(DistributedThread<Input, Output> parent, DistributedRunnable<Input, Output> func, List<Input> data) {
+        super(parent, func, data);
+    }
+
+    @Override
+    public void runThread() {
+        thisThread = new Thread(function);
+        thisThread.start();
+    }
+
+    /**
+     * Waits for all of the children threads to finish running and collects the data;
+     * @return The number of new threads this thread and its children created.
+     */
     // TODO: Maybe create class to return more info, this function will return the benchmark and aggregate the data from runs below.
-    public Output run() {
-        return 1;
+    public int joinThreads() {
+        int numSplits = 0;
+        for (DistributedThreadBenchmark<Input, Output> thread : children) {
+            numSplits += thread.joinThreads();
+        }
+
+        try {
+            thisThread.join();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        numSplits += this.numSplits;
+
+        return numSplits;
     }
 
-
-    private void createThread(List<Input> newData) {
-        new DistributedThreadBenchmark<>(function, );
-    }
-
-    private int joinThreads() {
-        return 1;
+    /**
+     * Should be called after a join, otherwise the results will not be accurate.
+     * @return The number of TOTAL children in the thread tree
+     */
+    public int getTotalChildren() {
+        return children.stream().reduce(children.size(), (acc, child) -> acc + child.getTotalChildren(), Integer::sum);
     }
 }

@@ -1,17 +1,16 @@
 package Thread;
 
-public abstract class DistributedRunnable<T, U> implements Runnable {
+import java.util.List;
 
-    /**
-     * Number of new threads per function call
-      */
-    private int estimatedSplits;
+public abstract class DistributedRunnable<Input, Output> implements Runnable {
+    private ThreadFactory<Input, Output> threadFactory;
+    public abstract Output func(List<Input> data);
 
-    public int getEstimatedSplits() {
-        return estimatedSplits;
+    public void setThreadFactory(ThreadFactory<Input, Output> threadFactory) {
+        this.threadFactory = threadFactory;
     }
 
-    public void setEstimatedSplits() {
-
+    public ThreadFactory<Input, Output> getThreadFactory() {
+        return threadFactory;
     }
 }
