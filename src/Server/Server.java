@@ -18,7 +18,8 @@ public class Server {
     public static Server getInstance() {
         if (server == null) {
             try {
-                return new Server();
+                server = new Server();
+                return server;
             } catch (Exception e) {
                 System.err.println("Server could not start:\n" + e);
                 System.exit(-1);

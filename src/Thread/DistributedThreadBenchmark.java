@@ -9,19 +9,13 @@ public class DistributedThreadBenchmark<Input, Output> extends DistributedThread
 
     protected int numSplits;
 
-    public DistributedThreadBenchmark(DistributedRunnable<Input, Output> func, List<Input> data) {
-        super(func, data);
-        func.setThreadFactory(new ThreadFactory<Input, Output>(Mode.Benchmark));
+    public DistributedThreadBenchmark(DistributedRunnable<Input, Output> func, CombineFunction<Output> combine, List<Input> data, Output defaultValue) {
+        this(null, func, combine, data, defaultValue);
     }
 
-    public DistributedThreadBenchmark(DistributedThread<Input, Output> parent, DistributedRunnable<Input, Output> func, List<Input> data) {
-        super(parent, func, data);
-    }
-
-    @Override
-    public void runThread() {
-        thisThread = new Thread(function);
-        thisThread.start();
+    public DistributedThreadBenchmark(DistributedThread<Input, Output> parent, DistributedRunnable<Input, Output> func, CombineFunction<Output> combine, List<Input> data, Output defaultValue) {
+        super(parent, func, combine, data, defaultValue);
+        setThreadFactory(new ThreadFactory<Input, Output>(Mode.Benchmark));
     }
 
     /**
@@ -31,8 +25,8 @@ public class DistributedThreadBenchmark<Input, Output> extends DistributedThread
     // TODO: Maybe create class to return more info, this function will return the benchmark and aggregate the data from runs below.
     public int joinThreads() {
         int numSplits = 0;
-        for (DistributedThreadBenchmark<Input, Output> thread : children) {
-            numSplits += thread.joinThreads();
+        for (DistributedThread<Input, Output> thread : children) {
+            numSplits += ((DistributedThreadBenchmark<Input, Output>) thread).joinThreads();
         }
 
         try {
@@ -44,13 +38,5 @@ public class DistributedThreadBenchmark<Input, Output> extends DistributedThread
         numSplits += this.numSplits;
 
         return numSplits;
-    }
-
-    /**
-     * Should be called after a join, otherwise the results will not be accurate.
-     * @return The number of TOTAL children in the thread tree
-     */
-    public int getTotalChildren() {
-        return children.stream().reduce(children.size(), (acc, child) -> acc + child.getTotalChildren(), Integer::sum);
     }
 }
