@@ -12,7 +12,7 @@ public class Functions {
     private Object defaultValue;
 
     public boolean canRun() {
-        return runnable != null && combine != null;
+        return runnable != null && combine != null && data != null && defaultValue != null;
     }
 
     public Class<? extends DistributedRunnable> getRunnable() {

@@ -3,8 +3,6 @@ package Implementations;
 import Thread.CombineFunction;
 
 import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class Multiply extends CombineFunction<Long> {
     @Override

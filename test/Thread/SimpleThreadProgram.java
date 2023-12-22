@@ -1,5 +1,6 @@
 package Thread;
 
+import java.io.File;
 import java.util.List;
 
 public class SimpleThreadProgram extends DistributedRunnable<Integer, Integer> {
@@ -17,6 +18,11 @@ public class SimpleThreadProgram extends DistributedRunnable<Integer, Integer> {
             lastI = i;
         }
         return sequentialAll(data.subList(0, lastI));
+    }
+
+    @Override
+    public File getFile() {
+        return null;
     }
 
     public static int getNumThreads(List<Integer> data) {
