@@ -3,9 +3,16 @@ package Implementations;
 import Thread.DistributedRunnable;
 
 
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SleepMultiply extends DistributedRunnable<Long, Long> {
+
+
+
     @Override
     public Long func(List<Long> data) {
         try {
@@ -21,9 +28,14 @@ public class SleepMultiply extends DistributedRunnable<Long, Long> {
             }
             return res;
         } else {
-            createThread(data.subList(data.size()/2, data.size()));
+            createThread(new ArrayList<>(data.subList(data.size()/2, data.size())));
             return func(data.subList(0, data.size()/2));
         }
+    }
+
+    @Override
+    public File getFile() {
+        return new File("src/Implementations/SleepMultiply.java");
     }
 }
 

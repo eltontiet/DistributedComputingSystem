@@ -149,6 +149,7 @@ public class Server {
     }
 
     public void tryRun(Functions functions, Address address) {
+        System.out.println("try run");
         if (functions.canRun()) {
             Thread t = new RunFunction(functions, address);
             running.put(address, t);
@@ -183,8 +184,12 @@ public class Server {
 
     public void sendRequest(Address address, ExternalThread externalThread) {
         ExternalServer otherServer = otherServers.get(address);
-        otherServer.sendObject(externalThread.getRunnable());
-        otherServer.sendObject(externalThread.getCombine());
+        String code = CodeCompiler.readFile(externalThread.getRunnable().getFile());
+        otherServer.sendMessage(new RunnableFunctionCode(code));
+        code = CodeCompiler.readFile(externalThread.getCombine().getFile());
+        otherServer.sendMessage(new CombineFunctionCode(code));
+//        otherServer.sendObject(externalThread.getRunnable());
+//        otherServer.sendObject(externalThread.getCombine());
         otherServer.sendObject(externalThread.getData());
         otherServer.sendObject(externalThread.getDefaultValue());
     }

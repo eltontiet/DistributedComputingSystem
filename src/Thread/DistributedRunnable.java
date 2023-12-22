@@ -1,5 +1,7 @@
 package Thread;
 
+import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 
 public abstract class DistributedRunnable<Input, Output> implements Runnable {
@@ -39,4 +41,7 @@ public abstract class DistributedRunnable<Input, Output> implements Runnable {
         thread.runThread();
         return thread;
     }
+
+    public abstract File getFile();
+
 }

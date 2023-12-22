@@ -24,7 +24,7 @@ public class CodeRunner<Input, Output> {
 
     public Output runProgram(List<Input> data, Output defaultData, Map<Address, Integer> servers) {
         try {
-            DistributedThreadRun<Input, Output> run = new DistributedThreadRun<Input, Output>(function.getConstructor().newInstance(), combine.getConstructor().newInstance(), data, defaultData);
+            DistributedThreadRun<Input, Output> run = new DistributedThreadRun<Input, Output>(servers, function.getConstructor().newInstance(), combine.getConstructor().newInstance(), data, defaultData);
             run.runThread();
             return run.joinThread();
         } catch (Exception e) {

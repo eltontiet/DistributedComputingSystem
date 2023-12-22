@@ -2,6 +2,7 @@ import Implementations.Multiply;
 import Implementations.SleepMultiply;
 import Server.Server;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
@@ -11,7 +12,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class Main {
-    public static void main(String[] args) throws UnknownHostException {
+    public static void main(String[] args) throws IOException {
+        System.out.println(new SleepMultiply().getFile().getCanonicalPath());
         Server.getInstance();
         System.out.println(Server.getInstance().getAddress().getHostAddress());
         Scanner scanner = new Scanner(System.in);

@@ -12,6 +12,10 @@ public class DistributedThreadRun<Input, Output> extends DistributedThread<Input
         this(null, new HashMap<>(), func, combine, data, defaultValue);
     }
 
+    public DistributedThreadRun(Map<Address, Integer> servers, DistributedRunnable<Input, Output> func, CombineFunction<Output> combine, List<Input> data, Output defaultValue) {
+        this(null, servers, func, combine, data, defaultValue);
+    }
+
     public DistributedThreadRun(DistributedThread<Input, Output> parent, Map<Address, Integer> servers, DistributedRunnable<Input, Output> func, CombineFunction<Output> combine, List<Input> data, Output defaultValue) {
         super(parent, servers, func, combine, data, defaultValue);
         setThreadFactory(new ThreadFactory<Input, Output>(Mode.Normal));

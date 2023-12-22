@@ -93,9 +93,9 @@ public abstract class DistributedThread<Input, Output> {
             int split = (otherServers.size() - 1)/2;
             List<Map.Entry<Address, Integer>> entries = new ArrayList<>(otherServers.entrySet());
 
-            Map<Address, Integer> otherServerHelpers = entries.subList(split, otherServers.size()).stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            Map<Address, Integer> otherServerHelpers = new ArrayList<>(entries.subList(split, otherServers.size())).stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-            child = threadFactory.createThread(this, otherServerHelpers, newFunc, combine, data, defaultValue);
+            child = threadFactory.createThread(this, otherServerHelpers, newFunc, combine, data, defaultValue, Mode.ExternalThread);
 
             ((ExternalThread<Input, Output>) child).setAddress(otherServer);
 

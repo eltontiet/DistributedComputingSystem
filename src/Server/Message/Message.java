@@ -1,6 +1,8 @@
 package Server.Message;
 
-public abstract class Message {
+import java.io.Serializable;
+
+public abstract class Message implements Serializable {
     public String message;
 
     public Message() {
