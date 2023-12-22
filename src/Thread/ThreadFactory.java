@@ -20,11 +20,18 @@ public class ThreadFactory<Input, Output> {
     // TODO: create overload methods
     public DistributedThread<Input, Output> createThread(DistributedThread<Input, Output> parent, Map<Address, Integer> servers,
                                                          DistributedRunnable<Input,Output> func, CombineFunction<Output> combine, List<Input> data, Output defaultValue) {
+        return createThread(parent, servers, func, combine, data, defaultValue, mode);
+    }
+
+    public DistributedThread<Input, Output> createThread(DistributedThread<Input, Output> parent, Map<Address, Integer> servers,
+                                                         DistributedRunnable<Input,Output> func, CombineFunction<Output> combine, List<Input> data, Output defaultValue, Mode mode) {
         switch (mode) {
             case Normal:
                 return new DistributedThreadRun<Input, Output>(parent, servers, func, combine, data, defaultValue);
             case Benchmark:
                 return new DistributedThreadBenchmark<Input, Output>(parent, func, combine, data, defaultValue);
+            case ExternalThread:
+                return new ExternalThread<Input, Output>(parent, servers, func, combine, data, defaultValue);
             default:
                 return null; // TODO: fix
         }

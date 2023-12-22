@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * This thread will decide if its children should be sent to a new server, or should just be run in this server.
@@ -85,7 +86,23 @@ public abstract class DistributedThread<Input, Output> {
             throw new RuntimeException(e);
         }
 
-        DistributedThread<Input, Output> child = threadFactory.createThread(this, otherServers, newFunc, combine, data, defaultValue);
+        DistributedThread<Input, Output> child;
+
+        if (otherServers != null && !otherServers.isEmpty()) {
+            Address otherServer = otherServers.keySet().stream().findFirst().get();
+            int split = (otherServers.size() - 1)/2;
+            List<Map.Entry<Address, Integer>> entries = new ArrayList<>(otherServers.entrySet());
+
+            Map<Address, Integer> otherServerHelpers = entries.subList(split, otherServers.size()).stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+            child = threadFactory.createThread(this, otherServerHelpers, newFunc, combine, data, defaultValue);
+
+            ((ExternalThread<Input, Output>) child).setAddress(otherServer);
+
+        } else {
+
+            child = threadFactory.createThread(this, otherServers, newFunc, combine, data, defaultValue);
+        }
         children.add(child);
 
         return child;

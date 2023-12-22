@@ -18,4 +18,14 @@ public class SimpleThreadProgram extends DistributedRunnable<Integer, Integer> {
         }
         return sequentialAll(data.subList(0, lastI));
     }
+
+    public static int getNumThreads(List<Integer> data) {
+        int num = 0;
+
+        for (int i = data.size()/2; i > 2048; i/=2) {
+            num++;
+        }
+
+        return num;
+    }
 }

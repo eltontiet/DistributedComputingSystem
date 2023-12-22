@@ -16,6 +16,10 @@ public abstract class DistributedRunnable<Input, Output> implements Runnable {
         return output;
     }
 
+    public List<Input> getData() {
+        return data;
+    }
+
     public void setData(List<Input> data) {
         this.data = data;
     }
