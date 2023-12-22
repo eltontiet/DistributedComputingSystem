@@ -8,9 +8,9 @@ import java.io.*;
 import java.util.stream.Collectors;
 
 public class CodeCompiler {
-    public static Class<?> compile(String className, String code) {
+    public static Class<?> compile(String classPath, String code) {
         try {
-            return InMemoryJavaCompiler.newInstance().compile(className, code);
+            return InMemoryJavaCompiler.newInstance().compile( getClassName(code), code);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -24,5 +24,10 @@ public class CodeCompiler {
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static String getClassName(String file) {
+
+        return file.split("package ")[1].split(";")[0] + "." + file.split("public class ")[1].split(" ")[0];
     }
 }

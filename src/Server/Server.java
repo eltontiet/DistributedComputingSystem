@@ -36,6 +36,7 @@ public class Server {
         responses = new HashMap<>();
         capacity = runBenchmark();
         capacities = new HashMap<>();
+        running = new HashMap<>();
         new AcceptRequest().start();
     }
 
